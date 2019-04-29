@@ -1,0 +1,100 @@
+---
+
+# This task for coniguring leaf1 switch
+
+- name: configure protocols
+  onyx_protocol:
+    spanning_tree: disabled
+    ip_routing: enabled
+    lacp: enabled
+    mlag: enabled
+    dcb_pfc: enabled
+    magp: enabled
+
+- name: Disable Lag members PFC
+  onyx_pfc_interface:
+    name: Eth1/15
+    state: disabled
+
+- name: Disable Lag members PFC
+  onyx_pfc_interface:
+    name: Eth1/16
+    state: disabled
+    
+- name: Configure Lag interface
+  onyx_linkagg:
+    name: Po1
+    members:
+      - Eth1/15
+      - Eth1/16
+    mode: active
+
+- name: Enable Lag interface PFC
+  onyx_pfc_interface:
+    name: Po1
+    state: enabled
+
+- name: Configure vlan for IPL
+  onyx_vlan:
+    vlan_id: "{{ ipl_vlan }}"
+    name: IPL
+
+- name: Create vlan interface for IPL
+  onyx_interface:
+    name: "Vlan {{ ipl_vlan }}"
+
+- name: Configure vlan interface ip address
+  onyx_l3_interface:
+    name: "Vlan {{ ipl_vlan }}"
+    ipv4: 192.168.1.1/24
+
+- name: configure IPL Lag interface
+  onyx_mlag_ipl:
+    name: Po1
+    vlan_interface: "Vlan {{ ipl_vlan }}"
+    peer_address: 192.168.1.2
+
+- name: configure mlag-vip
+  onyx_mlag_vip:
+    ipaddress: 172.16.1.1/24
+    group_name: ansible-test-group
+    mac_address: aa:99:80:80:80:80
+
+- name: create vlan for MLAG with servers
+  onyx_vlan:
+    vlan_id: 201
+    name: SERVERS
+
+- name: configure vlan for MLAG with servers
+  onyx_l3_interface:
+    name: Vlan 201
+    ipv4: 172.16.2.1/24
+
+# MAGP configuration
+- onyx_config:
+    lines:
+      - interface vlan 201 magp 1 ip virtual-router address 172.16.2.1
+      - interface vlan 201 magp 1 ip virtual-router mac-address aa:99:80:80:80:81
+
+- name: configure ports vlan
+  onyx_l2_interface:
+    name: Eth1/17
+    mode: access
+    access_vlan: 1
+   
+- name: configure ports vlan
+  onyx_l2_interface:
+    name: Eth1/9
+    mode: access
+    access_vlan: 1
+
+
+# MPO configuration
+- onyx_config:
+    lines:
+      - interface mlag-port-channel 1-2 no shutdown 
+      - interface ethernet 1/7 mlag-channel-group 1 mode active
+      - interface ethernet 1/9 mlag-channel-group 2 mode active
+      - interface mlag-port-channel 1 switchport access vlan 201
+      - interface mlag-port-channel 2 switchport access vlan 201
+      - configuration write  
