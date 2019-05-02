@@ -4,6 +4,7 @@ This repository consist of ansible configuration files for MLAG (Multi-chassis L
 
 Topology
 --------
+![]()topology.jpg
 2 switches connected  with each other (MLAG), and two hosts connected to both switches
 
 
