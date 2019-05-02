@@ -14,7 +14,3 @@ Before starting install [ansible](https://docs.ansible.com/ansible/latest/instal
 Topology
 --------
 ![](Onxy_2_Switch_MLAG/topology.jpg)
-
-
-
-
