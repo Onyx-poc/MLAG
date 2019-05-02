@@ -6,8 +6,10 @@ The ansible  as files will configure 2 leaf switches and 2 server as shown in th
 Run the below:
 Before starting install [ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html) on a Linux server.
 
-https://github.com/Onyx-poc/Mlag.git
+git clone https://github.com/Onyx-poc/Mlag.git
+
 cd Mlag/Onxy_2_Switch_MLAG/
+
 ansible site.yml 
 
 Topology
