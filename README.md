@@ -1,6 +1,6 @@
 # 2-Switch MLAG Configurations with ansible
 
-This repository consist of ansible configuration files for MLAG (Multi-chassis LAG) in Onxy on Mellanox switch systems.
+This repository consist of ansible configuration files for [MLAG](https://community.mellanox.com/s/article/how-to-configure-mlag-on-mellanox-switches) (Multi-chassis LAG) in Onxy on Mellanox switch systems.
 
 Topology
 --------
